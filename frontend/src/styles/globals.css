@@ -1,0 +1,225 @@
+@import './tokens.css';
+
+/* ==========================================================================
+   GLOBAL RESET & LAB CUTTING-MAT ENVIRONMENT
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.5;
+  background-image: 
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(var(--grid-line-heavy) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-heavy) 1px, transparent 1px);
+  background-size: 
+    var(--grid-size) var(--grid-size),
+    var(--grid-size) var(--grid-size),
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5),
+    calc(var(--grid-size) * 5) calc(var(--grid-size) * 5);
+  background-position: -1px -1px;
+}
+
+/* Tabular Numbers for all Financial Data */
+.tabular-num, .money, .currency {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Quoted Clause Typography (Newsreader Serif) */
+.clause-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Focus States — High-Contrast Accessible Outline */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Buttons and Clickables */
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: var(--bw) solid var(--ink);
+  background: var(--sheet);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+button:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Tactile Paper Sheet Surfaces */
+.paper-sheet {
+  background: var(--sheet);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-sheet);
+  position: relative;
+}
+
+.paper-sheet-hero {
+  border-width: var(--bw-hero);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Physical Manila Folder Tabs */
+.folder-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: var(--bw) solid var(--ink);
+  background: var(--sheet-muted);
+  padding: 8px 12px 0 12px;
+}
+
+.folder-tab {
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: var(--bw) solid var(--ink);
+  border-bottom: none;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  transform: translateY(var(--bw));
+  box-shadow: none;
+}
+
+.folder-tab.active {
+  background: var(--sheet);
+  border-bottom: var(--bw) solid var(--sheet);
+  z-index: 2;
+  transform: translateY(calc(var(--bw) * 2));
+}
+
+/* Rubber Stamp Styling */
+.verdict-stamp {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  border: 4px solid var(--ink);
+  transform: rotate(-3deg);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+
+.stamp-covered {
+  background: var(--lime);
+  color: #111111;
+  border-color: #111111;
+}
+
+.stamp-excluded {
+  background: var(--red);
+  color: #FFFFFF;
+  border-color: #111111;
+}
+
+.stamp-conditional {
+  background: var(--yellow);
+  color: #111111;
+  border-color: #111111;
+}
+
+.stamp-uncertain {
+  background: var(--lilac);
+  color: #111111;
+  border: 3px dashed var(--ink);
+}
+
+/* Evidence Pin & Citations */
+.citation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--teal);
+  color: #111111;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.citation-chip:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* Itemized Cost Receipt (Perforated Edge) */
+.receipt-container {
+  background: var(--sheet);
+  border: var(--bw) solid var(--ink);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  position: relative;
+}
+
+.receipt-container::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: radial-gradient(circle, transparent, transparent 50%, var(--sheet) 50%, var(--sheet) 100%);
+  background-size: 16px 18px;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
