@@ -64,21 +64,6 @@ html_content = '''<!DOCTYPE html>
       --ease-scroll: 520ms ease;
     }
 
-    body.dark {
-      --bg: #111111;
-      --black: #F7F3EC;
-      --white: #1D1D1D;
-      --gray: #2B2B2B;
-      --lime: #4F6315;
-      --purple: #5C35BD;
-      --pink: #9E2A56;
-      --cyan: #176F68;
-      --electric-blue: #1F5F97;
-      --neon-orange: #8F5419;
-      --neon-mint: #27633A;
-      --grid-line: rgba(247, 243, 236, 0.08);
-    }
-
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -240,31 +225,6 @@ html_content = '''<!DOCTYPE html>
       box-shadow: 2px 2px 0 var(--black);
     }
 
-    .theme-toggle {
-      background: var(--pink);
-      color: var(--black);
-      border: 4px solid var(--black);
-      border-radius: 9px;
-      box-shadow: 5px 5px 0 var(--black);
-      width: 48px;
-      height: 44px;
-      font-weight: 700;
-      font-family: var(--font-main);
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform var(--ease-fast), box-shadow var(--ease-fast);
-    }
-    .theme-toggle:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 7px 7px 0 var(--black);
-    }
-    .theme-toggle:active {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0 var(--black);
-    }
 
     .tech-pill {
       display: inline-flex;
@@ -308,7 +268,6 @@ html_content = '''<!DOCTYPE html>
     .card:hover {
       transform: translateY(-8px) rotate(-0.6deg);
       box-shadow: 15px 15px 0 var(--black);
-      border-color: var(--purple);
     }
 
     /* ==========================================================================
@@ -510,157 +469,287 @@ html_content = '''<!DOCTYPE html>
     /* ==========================================================================
        PAGE 1: HERO / LANDING
        ========================================================================== */
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.25fr 0.95fr;
-      gap: 28px;
+    /* Hero Section: Extended Full-Width Banner */
+    .hero-banner-extended {
+      width: 100%;
       margin-bottom: 36px;
     }
 
     .hero-card {
-      background: var(--purple);
-      border: 5px solid var(--black);
-      border-radius: 12px;
-      box-shadow: 10px 10px 0 var(--black);
-      padding: clamp(24px, 3.5vw, 42px);
+      background: #59D9C9;
+      color: #111111;
+      border: 5px solid #111111;
+      border-radius: 18px;
+      box-shadow: 10px 10px 0 #111111;
+      padding: clamp(28px, 4.5vw, 48px);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      min-height: 540px;
+      gap: 24px;
       position: relative;
       overflow: hidden;
     }
     .hero-card::after {
       content: "";
       position: absolute;
-      right: -40px;
-      bottom: -40px;
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(221, 242, 71, 0.45) 0%, transparent 70%);
+      right: -25px;
+      bottom: -25px;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(221, 242, 71, 0.28) 0%, rgba(184, 146, 255, 0.15) 45%, transparent 70%);
       pointer-events: none;
+      border-radius: 50%;
+      filter: blur(25px);
     }
 
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-card-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-card-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--black);
-      color: var(--white);
-      padding: 6px 14px;
+      background: #111111;
+      color: #FFFFFF;
+      padding: 6px 16px;
+      border: 2px solid #111111;
       border-radius: 999px;
       font-size: 0.82rem;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.5px;
-      width: fit-content;
-      box-shadow: 3px 3px 0 var(--lime);
-      margin-bottom: 20px;
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+    }
+    .hero-trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #111111;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid #111111;
+      border-radius: 999px;
+      padding: 4px 12px;
+      box-shadow: 2px 2px 0 #111111;
     }
     .pulse-dot {
       width: 10px;
       height: 10px;
-      background: var(--lime);
+      background: #DDF247;
       border-radius: 50%;
       animation: pulseGlow 1.5s infinite;
+      box-shadow: 0 0 8px #DDF247;
     }
 
     .hero-headline {
-      font-size: clamp(3.8rem, 11vw, 7.8rem);
-      font-weight: 700;
-      line-height: 0.82;
+      font-size: clamp(4.2rem, 11vw, 8.2rem);
+      font-weight: 900;
+      line-height: 0.85;
       letter-spacing: -3.5px;
-      margin-bottom: 16px;
-      color: var(--black);
+      margin-bottom: 18px;
+      color: #111111;
       text-transform: uppercase;
+      position: relative;
+      z-index: 1;
     }
 
     .hero-tagline {
-      font-size: clamp(1.2rem, 2.4vw, 1.8rem);
-      font-weight: 700;
-      margin-bottom: 14px;
+      font-size: clamp(1.2rem, 2.4vw, 1.85rem);
+      font-weight: 800;
+      margin-bottom: 16px;
       display: inline-block;
-      background: var(--white);
-      padding: 4px 14px;
-      border: 3px solid var(--black);
-      border-radius: 8px;
-      box-shadow: 4px 4px 0 var(--black);
+      background: #FFFFFF;
+      color: #111111;
+      padding: 6px 18px;
+      border: 3.5px solid #111111;
+      border-radius: 10px;
+      box-shadow: 5px 5px 0 #111111;
+      position: relative;
+      z-index: 1;
     }
 
     .hero-desc {
-      font-size: 1.05rem;
-      font-weight: 500;
-      max-width: 580px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      max-width: 820px;
       margin-bottom: 26px;
       line-height: 1.5;
+      color: #111111;
+      position: relative;
+      z-index: 1;
     }
 
     .metric-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     .metric-box {
-      border: 4px solid var(--black);
-      border-radius: 10px;
-      box-shadow: 5px 5px 0 var(--black);
-      padding: 14px 12px;
+      border: 4px solid #111111;
+      border-radius: 12px;
+      box-shadow: 5px 5px 0 #111111;
+      padding: 18px 14px;
       text-align: center;
-      transition: transform var(--ease-fast);
+      color: #111111;
+      cursor: pointer;
+      transition: transform var(--ease-fast), box-shadow var(--ease-fast);
     }
     .metric-box:hover {
       transform: translateY(-4px);
+      box-shadow: 7px 7px 0 #111111;
     }
-    .metric-box.box-lime { background: var(--lime); }
-    .metric-box.box-pink { background: var(--pink); }
-    .metric-box.box-white { background: var(--white); }
+    .metric-box.box-lime { background: #DDF247; }
+    .metric-box.box-pink { background: #FFB3D1; }
+    .metric-box.box-white { background: #FFFFFF; }
 
     .metric-val {
-      font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-      font-weight: 700;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-weight: 900;
       line-height: 1.1;
       display: block;
+      color: #111111;
     }
     .metric-label {
-      font-size: 0.76rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       text-transform: uppercase;
-      margin-top: 4px;
+      margin-top: 6px;
       display: block;
+      letter-spacing: 0.5px;
+      color: #111111;
     }
 
     .hero-buttons {
       display: flex;
-      gap: 14px;
+      gap: 16px;
       flex-wrap: wrap;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-buttons .cta-button {
+      background: #DDF247;
+      color: #111111;
+      border: 4px solid #111111;
+      box-shadow: 5px 5px 0 #111111;
+      font-weight: 800;
+    }
+    .hero-buttons .ghost-button {
+      background: #FFFFFF;
+      color: #111111;
+      border: 4px solid #111111;
+      box-shadow: 5px 5px 0 #111111;
+      font-weight: 800;
+    }
+    .hero-buttons .cta-button:hover,
+    .hero-buttons .ghost-button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 #111111;
     }
 
-    /* Live Demo Upload Hero Card */
-    .live-demo-card {
+
+
+    /* Live Demo Upload Hero Card (Centered Workstation) */
+    .live-demo-card-centered {
+      max-width: 1080px;
+      margin: 0 auto 36px;
       background: var(--white);
       border: 5px solid var(--black);
-      border-radius: 12px;
+      border-radius: 14px;
       box-shadow: 10px 10px 0 var(--black);
-      padding: clamp(24px, 3.2vw, 36px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      padding: clamp(24px, 3.5vw, 38px);
+      position: relative;
     }
 
     .demo-card-head {
-      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid var(--gray);
     }
-    .demo-card-title {
-      font-size: 1.45rem;
-      font-weight: 700;
+    .demo-card-title-group h2 {
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+      font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .demo-card-desc {
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       font-weight: 500;
       opacity: 0.85;
+      max-width: 620px;
+    }
+    .live-parser-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--lime);
+      color: var(--black);
+      padding: 6px 14px;
+      border: 2px solid var(--black);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      box-shadow: 3px 3px 0 var(--black);
+      letter-spacing: 0.2px;
+    }
+    .parser-workstation-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    @media (max-width: 860px) {
+      .parser-workstation-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .parser-progress-bar {
+      display: none;
+      height: 6px;
+      width: 100%;
+      background: #e2e2e2;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+      border: 1px solid var(--black);
+    }
+    .parser-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--lime);
+      transition: width 0.4s ease;
     }
 
     /* Upload Zone */
@@ -1375,7 +1464,6 @@ html_content = '''<!DOCTYPE html>
     .feature-card:hover {
       transform: translateY(-8px) rotate(-0.6deg);
       box-shadow: 15px 15px 0 var(--black);
-      border-color: var(--purple);
     }
 
     .fc-lime { background: var(--lime); }
@@ -1781,86 +1869,6 @@ html_content = '''<!DOCTYPE html>
       font-weight: 500;
     }
 
-    /* ==========================================================================
-       PAGE 7: CONTACT
-       ========================================================================== */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 32px;
-    }
-
-    .contact-form-card {
-      background: var(--white);
-      border: 5px solid var(--black);
-      border-radius: 12px;
-      box-shadow: 10px 10px 0 var(--black);
-      padding: 34px;
-    }
-
-    .contact-banner {
-      background: var(--black);
-      color: var(--white);
-      padding: 16px 20px;
-      border-radius: 8px;
-      margin-bottom: 24px;
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .contact-info-card {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .info-box {
-      background: var(--purple);
-      border: 5px solid var(--black);
-      border-radius: 12px;
-      box-shadow: 8px 8px 0 var(--black);
-      padding: 24px;
-    }
-
-    .social-badge-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .social-badge-btn {
-      background: var(--white);
-      border: 3px solid var(--black);
-      border-radius: 10px;
-      box-shadow: 4px 4px 0 var(--black);
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--black);
-      font-weight: 700;
-      font-size: 0.92rem;
-      transition: transform var(--ease-fast), box-shadow var(--ease-fast), background var(--ease-fast);
-    }
-    .social-badge-btn:hover {
-      background: var(--lime);
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 var(--black);
-    }
-
-    .mono-circle {
-      width: 38px;
-      height: 38px;
-      background: var(--black);
-      color: var(--white);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
 
     /* ==========================================================================
        FOOTER COMPONENT
@@ -2048,9 +2056,6 @@ html_content = '''<!DOCTYPE html>
       .pricing-card.plan-pro:hover {
         transform: translateY(-8px) rotate(-0.6deg);
       }
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
       .highlight-cards {
         grid-template-columns: 1fr;
       }
@@ -2082,9 +2087,6 @@ html_content = '''<!DOCTYPE html>
       .footer-top {
         grid-template-columns: 1fr;
       }
-      .social-badge-grid {
-        grid-template-columns: 1fr;
-      }
       .pipeline-step {
         padding-left: 56px;
       }
@@ -2100,7 +2102,7 @@ html_content = '''<!DOCTYPE html>
 
     /* Print styles */
     @media print {
-      .navbar-container, .theme-toggle, .mobile-menu-btn, .chat-input-bar, .chat-quick-chips, .cursor-trail-dot {
+      .navbar-container, .mobile-menu-btn, .chat-input-bar, .chat-quick-chips, .cursor-trail-dot {
         display: none !important;
       }
       .card, .hero-card, .step-card {
@@ -2134,11 +2136,9 @@ html_content = '''<!DOCTYPE html>
         <a href="#demo" class="nav-link" data-view="demo" onclick="navigateTo('demo')">Try It</a>
         <a href="#pricing" class="nav-link" data-view="pricing" onclick="navigateTo('pricing')">Pricing</a>
         <a href="#faq" class="nav-link" data-view="faq" onclick="navigateTo('faq')">FAQ</a>
-        <a href="#contact" class="nav-link" data-view="contact" onclick="navigateTo('contact')">Contact</a>
       </div>
 
       <div class="nav-actions">
-        <button class="theme-toggle" id="theme-btn" aria-label="Toggle light and dark theme" aria-pressed="false" title="Switch Theme">DK</button>
         <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle mobile menu">
           <span></span><span></span><span></span>
         </button>
@@ -2154,7 +2154,6 @@ html_content = '''<!DOCTYPE html>
       <a href="#demo" class="nav-link" onclick="navigateTo('demo'); closeMobileMenu();">Try Interactive Demo</a>
       <a href="#pricing" class="nav-link" onclick="navigateTo('pricing'); closeMobileMenu();">Pricing & Plans</a>
       <a href="#faq" class="nav-link" onclick="navigateTo('faq'); closeMobileMenu();">FAQ</a>
-      <a href="#contact" class="nav-link" onclick="navigateTo('contact'); closeMobileMenu();">Contact Us</a>
     </div>
   </header>
 
@@ -2166,16 +2165,25 @@ html_content = '''<!DOCTYPE html>
          ========================================================================== -->
     <section id="view-home" class="view-section active-view">
       
-      <!-- Hero Top 2-Card Grid -->
-      <div class="hero-grid">
-        
-        <!-- Left: Purple Hero Card -->
-        <article class="hero-card">
+      <!-- Extended Full-Width Hero Card -->
+      <div class="hero-banner-extended">
+        <article class="hero-card" id="hero-main-card">
           <div>
-            <div class="hero-eyebrow">
-              <span class="pulse-dot"></span>
-              AI-POWERED INSURANCE INTELLIGENCE
+            <div class="hero-card-header">
+              <div class="hero-card-header-left">
+                <div class="hero-eyebrow">
+                  <span class="pulse-dot"></span>
+                  AI-POWERED INSURANCE INTELLIGENCE
+                </div>
+              </div>
+              <div class="hero-card-header-right">
+                <div class="hero-trust-badge">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  IRDAI Standards Aligned • Deterministic Math
+                </div>
+              </div>
             </div>
+
             <h1 class="hero-headline">INSURIX</h1>
             <div>
               <span class="hero-tagline">Policy confusion → Financial clarity</span>
@@ -2203,7 +2211,7 @@ html_content = '''<!DOCTYPE html>
           </div>
 
           <div class="hero-buttons">
-            <button class="cta-button" onclick="navigateTo('demo')">
+            <button class="cta-button" onclick="document.getElementById('live-policy-parser-card').scrollIntoView({ behavior: 'smooth' }); triggerFileInput('hero-file-input');">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="17 8 12 3 7 8"/>
@@ -2216,15 +2224,26 @@ html_content = '''<!DOCTYPE html>
             </button>
           </div>
         </article>
+      </div>
 
-        <!-- Right: Live Demo Upload Card -->
-        <article class="live-demo-card">
-          <div class="demo-card-head">
-            <h2 class="demo-card-title">Live Policy Parser</h2>
-            <p class="demo-card-desc">Upload your insurance PDF or test with popular Indian insurer policies instantly.</p>
+      <!-- Live Policy Parser (Centered Workstation Card) -->
+      <article class="live-demo-card-centered" id="live-policy-parser-card">
+        <div class="demo-card-head">
+          <div class="demo-card-title-group">
+            <h2 class="demo-card-title">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Live Policy Parser
+            </h2>
+            <p class="demo-card-desc">Upload your insurance PDF or test with popular Indian insurer policies instantly with local OCR extraction.</p>
           </div>
+          <div class="live-parser-indicator">
+            <span class="pulse-dot"></span>
+            Vision OCR & Parser Engine Ready
+          </div>
+        </div>
 
-          <!-- Drag and Drop Upload Zone -->
+        <div class="parser-workstation-grid">
+          <!-- Left: Drag and Drop Upload Zone -->
           <div class="upload-zone" id="hero-upload-zone" onclick="triggerFileInput('hero-file-input')">
             <input type="file" id="hero-file-input" style="display:none" accept="application/pdf" onchange="handleFileSelected(event)">
             <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2232,41 +2251,45 @@ html_content = '''<!DOCTYPE html>
               <polyline points="17 8 12 3 7 8"/>
               <line x1="12" y1="3" x2="12" y2="15"/>
             </svg>
-            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:4px;">Drop Policy PDF Here</h3>
+            <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:4px;">Drop Policy PDF Here or Click to Browse</h3>
             <p>Supports Star Health, HDFC ERGO, Care, Max Bupa & 50+ insurers</p>
-            <span class="upload-zone-hint">PDF up to 25MB • Vision OCR Enabled</span>
-          </div>
-
-          <!-- Sample Policies List -->
-          <div>
-            <div class="sample-section-label">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Or Try A Pre-loaded Sample Policy:
-            </div>
-            <div class="sample-pill-grid">
-              <button class="sample-btn selected" onclick="loadSamplePolicy('star')">
-                <span>⭐ Star Health Comprehensive (₹5L)</span>
-                <span class="sample-tag">Loaded</span>
-              </button>
-              <button class="sample-btn" onclick="loadSamplePolicy('royal')">
-                <span>🛡️ Royal Sundaram Lifeline Supreme (₹10L)</span>
-                <span class="sample-tag">Load</span>
-              </button>
-              <button class="sample-btn" onclick="loadSamplePolicy('hdfc')">
-                <span>⚡ HDFC ERGO Optima Restore (₹5L)</span>
-                <span class="sample-tag">Load</span>
-              </button>
+            <span class="upload-zone-hint">Insurance policy PDFs only • Up to 25MB • Vision OCR Enabled</span>
+            <div class="parser-progress-bar" id="hero-parser-progress">
+              <div class="parser-progress-fill" id="hero-parser-fill"></div>
             </div>
           </div>
 
-          <!-- Active Policy Status Strip -->
-          <div class="policy-active-strip" id="hero-active-strip">
-            <span>Active: <strong>Star Comprehensive (5L)</strong></span>
-            <span>Waiting: 36m PED • Room: 1% SI</span>
-          </div>
-        </article>
+          <!-- Right: Pre-loaded Samples & Active Policy Strip -->
+          <div style="display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
+            <div>
+              <div class="sample-section-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Or Try A Pre-loaded Sample Policy:
+              </div>
+              <div class="sample-pill-grid">
+                <button class="sample-btn selected" onclick="loadSamplePolicy('star')">
+                  <span>⭐ Star Health Comprehensive (₹5L)</span>
+                  <span class="sample-tag">Loaded</span>
+                </button>
+                <button class="sample-btn" onclick="loadSamplePolicy('royal')">
+                  <span>🛡️ Royal Sundaram Lifeline Supreme (₹10L)</span>
+                  <span class="sample-tag">Load</span>
+                </button>
+                <button class="sample-btn" onclick="loadSamplePolicy('hdfc')">
+                  <span>⚡ HDFC ERGO Optima Restore (₹5L)</span>
+                  <span class="sample-tag">Load</span>
+                </button>
+              </div>
+            </div>
 
-      </div>
+            <!-- Active Policy Status Strip -->
+            <div class="policy-active-strip" id="hero-active-strip">
+              <span>Active: <strong>Star Comprehensive (5L)</strong></span>
+              <span>Waiting: 36m PED • Room: 1% SI</span>
+            </div>
+          </div>
+        </div>
+      </article>
 
       <!-- Insurer Ticker & Sliding Carousel -->
       <div class="insurers-ticker">
@@ -2426,6 +2449,7 @@ html_content = '''<!DOCTYPE html>
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
             <span class="badge-pill" id="landing-loaded-policy-badge">Policy: Star Comprehensive (5L)</span>
+            <span class="badge-pill" id="engine-mode-pill" style="font-size:0.75rem; background:var(--gray);">Local Engine</span>
             <button class="touch-button" onclick="navigateTo('demo')" style="padding:6px 12px; font-size:0.82rem;">Open Full Workspace ↗</button>
           </div>
         </div>
@@ -3252,7 +3276,7 @@ html_content = '''<!DOCTYPE html>
           </div>
 
           <button class="ghost-button" style="width:100%;" onclick="openPlanModal('Enterprise')">
-            Contact Sales Team
+            Get Enterprise Access
           </button>
         </article>
 
@@ -3380,120 +3404,6 @@ html_content = '''<!DOCTYPE html>
       </div>
     </section>
 
-    <!-- ==========================================================================
-         PAGE 7: CONTACT VIEW
-         ========================================================================== -->
-    <section id="view-contact" class="view-section">
-      <div class="section-header">
-        <span class="section-eyebrow">Direct Desk</span>
-        <h2 class="section-title">CONNECT WITH POLICY SPECIALISTS</h2>
-        <p class="section-subtitle">
-          Have a dispute with your TPA or need enterprise API integration? Get in touch directly.
-        </p>
-      </div>
-
-      <div class="contact-grid">
-        
-        <!-- Left: Contact Form -->
-        <article class="contact-form-card">
-          <div class="contact-banner">
-            Have questions about your health insurance policy?
-          </div>
-
-          <form id="contact-form" onsubmit="handleContactSubmit(event)">
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="contact-name">Full Name</label>
-              <input type="text" id="contact-name" class="form-control" placeholder="e.g. Sarthak Sharma" required>
-            </div>
-
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="contact-email">Email Address</label>
-              <input type="email" id="contact-email" class="form-control" placeholder="sarthak@example.com" required>
-            </div>
-
-            <div class="form-group" style="margin-bottom:16px;">
-              <label for="contact-insurer">Insurance Provider / Policy Type</label>
-              <select id="contact-insurer" class="treatment-select">
-                <option value="Star Health">Star Health & Allied Insurance</option>
-                <option value="HDFC ERGO">HDFC ERGO General Insurance</option>
-                <option value="Care Health">Care Health Insurance (Religare)</option>
-                <option value="Royal Sundaram">Royal Sundaram General Insurance</option>
-                <option value="ICICI Lombard">ICICI Lombard General Insurance</option>
-                <option value="Niva Bupa">Niva Bupa Health Insurance</option>
-                <option value="Corporate GMC">Corporate Group Medical Cover (GMC)</option>
-                <option value="Other">Other Insurer</option>
-              </select>
-            </div>
-
-            <div class="form-group" style="margin-bottom:20px;">
-              <label for="contact-message">Message or Policy Clause Question</label>
-              <textarea id="contact-message" class="form-control" rows="4" placeholder="Describe your policy question or planned hospital admission..." required></textarea>
-            </div>
-
-            <button type="submit" class="cta-button" style="width:100%;">
-              <span>Send Message Directly</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-          </form>
-        </article>
-
-        <!-- Right: Social & Office Badges -->
-        <aside class="contact-info-card">
-          
-          <div class="info-box">
-            <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:8px;">Fast Support Desk</h3>
-            <p style="font-size:0.95rem; font-weight:500; margin-bottom:16px;">
-              Our health policy research team reviews claims interpretations and IRDAI Ombudsman precedent cases daily.
-            </p>
-            <div style="background:var(--white); border:3px solid var(--black); border-radius:8px; padding:12px; font-weight:700; font-size:0.9rem;">
-              ⏱️ Average Response Time: <strong>&lt; 2 Hours</strong>
-            </div>
-          </div>
-
-          <div class="social-badge-grid">
-            <a href="mailto:support@insurix.ai" class="social-badge-btn">
-              <div class="mono-circle">@</div>
-              <div>
-                <div style="font-size:0.75rem; opacity:0.8;">EMAIL US</div>
-                <div>support@insurix.ai</div>
-              </div>
-            </a>
-
-            <a href="tel:+918040001000" class="social-badge-btn">
-              <div class="mono-circle">📞</div>
-              <div>
-                <div style="font-size:0.75rem; opacity:0.8;">TOLL FREE</div>
-                <div>1800-INSURIX</div>
-              </div>
-            </a>
-
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-badge-btn">
-              <div class="mono-circle">IN</div>
-              <div>
-                <div style="font-size:0.75rem; opacity:0.8;">LINKEDIN</div>
-                <div>/company/insurix</div>
-              </div>
-            </a>
-
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-badge-btn">
-              <div class="mono-circle">GH</div>
-              <div>
-                <div style="font-size:0.75rem; opacity:0.8;">GITHUB</div>
-                <div>/insurix-ai</div>
-              </div>
-            </a>
-          </div>
-
-          <div style="background:var(--neon-mint); border:4px solid var(--black); border-radius:10px; padding:18px; box-shadow:5px 5px 0 var(--black); font-size:0.9rem;">
-            <strong>📍 Headquarters:</strong><br>
-            Insurix Policy Labs India Pvt Ltd<br>
-            Level 4, 100 Feet Road, Indiranagar, Bangalore 560038
-          </div>
-
-        </aside>
-
-      </div>
-    </section>
 
     <!-- Disclaimer Alert -->
     <div class="disclaimer-box" style="margin-top:52px;">
@@ -3544,7 +3454,7 @@ html_content = '''<!DOCTYPE html>
             <li><a class="footer-link" onclick="showToast('Privacy Policy: End-to-end encrypted with zero broker sharing')">Privacy Policy</a></li>
             <li><a class="footer-link" onclick="showToast('Terms: For policy wording analytics & estimates')">Terms of Service</a></li>
             <li><a class="footer-link" onclick="showToast('IRDAI Master Circular Compliance Verified')">IRDAI Compliance</a></li>
-            <li><a class="footer-link" onclick="navigateTo('contact')">Ombudsman Grievance Desk</a></li>
+            <li><a class="footer-link" onclick="navigateTo('faq')">Ombudsman Grievance Desk</a></li>
           </ul>
         </div>
 
@@ -3693,41 +3603,24 @@ html_content = '''<!DOCTYPE html>
 
     let currentPolicy = SAMPLE_POLICIES.star;
 
-    /* ==========================================================================
-       THEME TOGGLE
-       ========================================================================== */
-    function setupThemeToggle() {
-      const toggle = document.getElementById('theme-btn');
-      const body = document.body;
-      
-      const saved = localStorage.getItem('insurix-theme');
-      if (saved === 'dark') {
-        body.classList.add('dark');
-        toggle.textContent = 'LT';
-        toggle.setAttribute('aria-pressed', 'true');
-      }
-      
-      toggle.addEventListener('click', () => {
-        body.classList.toggle('dark');
-        const isDark = body.classList.contains('dark');
-        toggle.textContent = isDark ? 'LT' : 'DK';
-        toggle.setAttribute('aria-pressed', isDark);
-        localStorage.setItem('insurix-theme', isDark ? 'dark' : 'light');
-        showToast(isDark ? 'Dark theme enabled' : 'Light theme enabled');
-      });
-    }
+
 
     /* ==========================================================================
        VIEW ROUTING & NAVIGATION
        ========================================================================== */
     function navigateTo(viewId) {
+      let targetSec = document.getElementById(`view-${viewId}`);
+      if (!targetSec) {
+        viewId = 'home';
+        targetSec = document.getElementById('view-home');
+      }
+
       // Hide all view sections
       document.querySelectorAll('.view-section').forEach(sec => {
         sec.classList.remove('active-view');
       });
 
       // Show selected section
-      const targetSec = document.getElementById(`view-${viewId}`);
       if (targetSec) {
         targetSec.classList.add('active-view');
       }
@@ -3844,7 +3737,7 @@ html_content = '''<!DOCTYPE html>
         zone.addEventListener('drop', (e) => {
           const files = e.dataTransfer.files;
           if (files.length > 0) {
-            simulateUpload(files[0].name);
+            validateAndUpload(files[0]);
           }
         });
       });
@@ -3852,19 +3745,115 @@ html_content = '''<!DOCTYPE html>
 
     function handleFileSelected(e) {
       if (e.target.files && e.target.files.length > 0) {
-        simulateUpload(e.target.files[0].name);
+        validateAndUpload(e.target.files[0]);
       }
     }
 
-    function simulateUpload(filename) {
+    /* ------------------------------------------------------------------
+       POLICY DOCUMENT VALIDATION
+       Reads raw PDF bytes and checks for >=3 insurance-specific terms.
+       Rejects anything that doesn't look like a real policy document.
+    ------------------------------------------------------------------ */
+    const POLICY_KEYWORDS = [
+      'policy', 'insured', 'insurer', 'insurance', 'premium', 'deductible',
+      'coverage', 'claim', 'benefit', 'exclusion', 'copay', 'co-pay',
+      'coinsurance', 'co-insurance', 'waiting period', 'preauthorization',
+      'hospitalization', 'sum insured', 'policyholder', 'reimbursement',
+      'endorsement', 'in-patient', 'out-patient', 'out-of-pocket',
+      'health plan', 'underwriter', 'sub-limit', 'rider', 'maternity',
+      'cashless', 'network provider', 'day care', 'domiciliary'
+    ];
+    const MIN_KEYWORD_HITS = 3;
+
+    function validatePolicyFile(file) {
+      return new Promise((resolve) => {
+        // -- 1. File type check --
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext !== 'pdf' && file.type !== 'application/pdf') {
+          resolve({
+            valid: false,
+            reason: `Only PDF files are accepted — you uploaded a <strong>.${ext.toUpperCase()}</strong> file. Export your policy as a PDF and try again.`
+          });
+          return;
+        }
+
+        // -- 2. Read raw bytes and scan for insurance keywords --
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const raw = ev.target.result;
+
+          // Check PDF magic header
+          if (!raw.startsWith('%PDF-')) {
+            resolve({ valid: false, reason: 'The file does not appear to be a valid PDF. Please check the file and try again.' });
+            return;
+          }
+
+          const lower = raw.toLowerCase();
+          const hits = POLICY_KEYWORDS.filter(kw => lower.includes(kw));
+
+          if (hits.length >= MIN_KEYWORD_HITS) {
+            resolve({ valid: true });
+          } else {
+            resolve({
+              valid: false,
+              reason: `We couldn't verify this as a health insurance policy document.<br><small style="opacity:.7;">Detected ${hits.length} of ${MIN_KEYWORD_HITS} required policy terms. Please upload your official insurer-issued policy PDF.</small>`
+            });
+          }
+        };
+        reader.onerror = () => {
+          resolve({ valid: false, reason: 'Could not read the file. It may be password-protected or corrupted. Please try again.' });
+        };
+        reader.readAsBinaryString(file);
+      });
+    }
+
+    async function validateAndUpload(file) {
       const zones = document.querySelectorAll('.upload-zone');
+
+      // -- Show scanning state --
       zones.forEach(zone => {
         zone.classList.add('processing');
         zone.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-            <div style="width:28px; height:28px; border:4px solid var(--black); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite;"></div>
-            <strong>Analyzing ${filename}...</strong>
-            <span style="font-size:0.75rem;">Extracting OCR clauses & table sub-limits...</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <div style="width:28px;height:28px;border:4px solid var(--black);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+            <strong>Validating document…</strong>
+            <span style="font-size:0.75rem;opacity:.7;">Checking for policy terms &amp; PDF integrity</span>
+          </div>
+        `;
+      });
+
+      const result = await validatePolicyFile(file);
+
+      if (!result.valid) {
+        // -- REJECTION STATE --
+        zones.forEach(zone => {
+          zone.classList.remove('processing');
+          zone.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--accent);border:3px solid var(--black);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;">✗</div>
+              <strong style="font-size:1rem;">Document Rejected</strong>
+              <p style="font-size:0.8rem;line-height:1.5;max-width:280px;margin:0;">${result.reason}</p>
+              <button
+                onclick="resetUploadZones()"
+                style="margin-top:4px;padding:8px 20px;font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;border:2.5px solid var(--black);border-radius:4px;background:var(--surface);box-shadow:3px 3px 0 var(--black);transition:all .15s;letter-spacing:.03em;"
+                onmouseover="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='5px 5px 0 var(--black)';"
+                onmouseout="this.style.transform='';this.style.boxShadow='3px 3px 0 var(--black)';"
+              >↩ Try Another File</button>
+            </div>
+          `;
+        });
+        showToast('❌ Not a valid policy document — please upload an insurance PDF.');
+        return;
+      }
+
+      // -- ACCEPTED: show analysis progress then navigate --
+      const filename = file.name;
+      zones.forEach(zone => {
+        zone.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;border:4px solid var(--black);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+            <strong>Analyzing ${filename}…</strong>
+            <span style="font-size:0.75rem;opacity:.7;">Extracting OCR clauses &amp; table sub-limits…</span>
           </div>
         `;
       });
@@ -3873,14 +3862,27 @@ html_content = '''<!DOCTYPE html>
         zones.forEach(zone => {
           zone.classList.remove('processing');
           zone.innerHTML = `
-            <svg class="upload-icon" style="width:36px; height:36px; margin-bottom:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <div style="font-size:0.95rem; font-weight:700;">${filename} Ingested!</div>
+            <svg class="upload-icon" style="width:36px;height:36px;margin-bottom:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="font-size:0.95rem;font-weight:700;">${filename} Ingested!</div>
             <div style="font-size:0.75rem;">42 Clauses extracted • Ready to query</div>
           `;
         });
-        showToast(`Document "${filename}" parsed successfully!`);
+        showToast(`✅ Policy "${filename}" parsed successfully!`);
         navigateTo('demo');
       }, 1600);
+    }
+
+    function resetUploadZones() {
+      const zones = document.querySelectorAll('.upload-zone');
+      zones.forEach(zone => {
+        zone.classList.remove('processing');
+        zone.innerHTML = `
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="upload-text">Drop your policy PDF here</div>
+          <div class="upload-subtext">or <label for="policy-upload" style="text-decoration:underline;cursor:pointer;font-weight:700;">browse files</label></div>
+          <div class="upload-subtext" style="margin-top:4px;opacity:.6;">Only insurance policy PDFs are accepted</div>
+        `;
+      });
     }
 
     /* ==========================================================================
@@ -3898,6 +3900,40 @@ html_content = '''<!DOCTYPE html>
       if (e.key === 'Enter') {
         sendChatQuery(context);
       }
+    }
+
+    let isBackendOnline = false;
+    async function probeBackend() {
+      try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 1200);
+        const res = await fetch('http://localhost:8123/health', { signal: ctrl.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          isBackendOnline = (data.status === 'healthy' || data.status === 'degraded');
+          const pill = document.getElementById('engine-mode-pill');
+          if (pill && isBackendOnline) {
+            pill.textContent = 'Server Engine (Port 8123)';
+            pill.style.background = 'var(--neon-mint)';
+          }
+        }
+      } catch (e) {
+        isBackendOnline = false;
+        const pill = document.getElementById('engine-mode-pill');
+        if (pill) {
+          pill.textContent = 'Local Engine';
+          pill.style.background = 'var(--gray)';
+        }
+      }
+    }
+    // Probe backend on load
+    if (typeof window !== 'undefined') {
+      window.addEventListener('DOMContentLoaded', () => {
+        probeBackend();
+      });
+      // Also probe immediately in case DOMContentLoaded already fired
+      probeBackend();
     }
 
     function sendChatQuery(context) {
@@ -3927,15 +3963,38 @@ html_content = '''<!DOCTYPE html>
       container.appendChild(typingDiv);
       container.scrollTop = container.scrollHeight;
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // Remove typing
         const t = document.getElementById(`typing-${context}`);
         if (t) t.remove();
 
-        // Generate response based on question keywords & currentPolicy
-        const replyData = generatePolicyResponse(question, currentPolicy);
+        let replyData = null;
+        if (isBackendOnline) {
+          try {
+            const ctrl = new AbortController();
+            const timeout = setTimeout(() => ctrl.abort(), 3000);
+            const res = await fetch('http://localhost:8123/api/query', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question, policy_id: currentPolicy.id }),
+              signal: ctrl.signal
+            });
+            clearTimeout(timeout);
+            if (res.ok) {
+              replyData = await res.json();
+            }
+          } catch (e) {
+            console.warn('Backend fetch failed, falling back to local engine:', e);
+          }
+        }
+
+        if (!replyData) {
+          // Generate response based on local engine
+          replyData = generatePolicyResponse(question, currentPolicy);
+        }
+
         appendAssistantMessage(container, replyData);
-      }, 950);
+      }, 700);
     }
 
     function generatePolicyResponse(query, policy) {
@@ -4135,7 +4194,7 @@ html_content = '''<!DOCTYPE html>
     }
 
     function escapeQuote(str) {
-      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return str.replace(/'/g, "'").replace(/"/g, '&quot;');
     }
 
     /* ==========================================================================
@@ -4381,7 +4440,13 @@ html_content = '''<!DOCTYPE html>
       openClauseModal(
         'Section 4.1 to 6.2 Master Schedule',
         1,
-        `Insurer: ${currentPolicy.insurer}\nPolicy: ${currentPolicy.policy_name}\nSum Insured: ₹${currentPolicy.sum_insured.toLocaleString()}\nRoom Limit: ${currentPolicy.room_rent_limit}\nICU Limit: ${currentPolicy.icu_limit}\nWaiting Periods: Initial ${currentPolicy.waiting_periods.initial}, Pre-Existing ${currentPolicy.waiting_periods.pre_existing}\nCo-payment: ${currentPolicy.co_payment}`
+        `Insurer: ${currentPolicy.insurer}
+Policy: ${currentPolicy.policy_name}
+Sum Insured: ₹${currentPolicy.sum_insured.toLocaleString()}
+Room Limit: ${currentPolicy.room_rent_limit}
+ICU Limit: ${currentPolicy.icu_limit}
+Waiting Periods: Initial ${currentPolicy.waiting_periods.initial}, Pre-Existing ${currentPolicy.waiting_periods.pre_existing}
+Co-payment: ${currentPolicy.co_payment}`
       );
     }
 
@@ -4405,15 +4470,6 @@ html_content = '''<!DOCTYPE html>
       navigateTo('demo');
     }
 
-    /* ==========================================================================
-       CONTACT FORM
-       ========================================================================== */
-    function handleContactSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById('contact-name').value;
-      showToast(`Thank you ${name}! Our policy specialist will contact you shortly.`);
-      e.target.reset();
-    }
 
     /* ==========================================================================
        TOAST NOTIFICATION SYSTEM
@@ -4492,7 +4548,11 @@ html_content = '''<!DOCTYPE html>
        INITIALIZATION
        ========================================================================== */
     document.addEventListener('DOMContentLoaded', () => {
-      setupThemeToggle();
+      try { 
+        localStorage.removeItem('insurix-hero-theme'); 
+        localStorage.removeItem('insurix-theme');
+        document.body.classList.remove('dark');
+      } catch(e) {}
       setupDragAndDrop();
       setupCursorTrail();
 
@@ -4511,10 +4571,12 @@ html_content = '''<!DOCTYPE html>
     });
   </script>
 </body>
-</html>
-'''
+</html>'''
 
-with open("/Users/sarthak/Desktop/Insurix/index.html", "w") as f:
+repo_root = os.path.dirname(os.path.abspath(__file__))
+out_path = os.path.join(repo_root, "index.html")
+
+with open(out_path, "w", encoding="utf-8") as f:
     f.write(html_content.strip())
 
-print("Created /Users/sarthak/Desktop/Insurix/index.html successfully!")
+print(f"Created {out_path} successfully!")
