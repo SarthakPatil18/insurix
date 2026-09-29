@@ -867,42 +867,135 @@ html_content = '''<!DOCTYPE html>
       gap: 10px;
     }
 
-    /* Insurer logos ticker */
+    /* Insurer logos ticker & sliding carousel */
     .insurers-ticker {
       background: var(--black);
       color: var(--white);
       border: 4px solid var(--black);
       border-radius: 10px;
       box-shadow: 6px 6px 0 var(--lime);
-      padding: 14px 20px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
-      gap: 20px;
-      overflow-x: auto;
+      gap: 16px;
+      overflow: hidden;
       margin-bottom: 36px;
-      scrollbar-width: none;
+      position: relative;
     }
-    .insurers-ticker::-webkit-scrollbar { display: none; }
     .ticker-label {
-      font-size: 0.82rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--lime);
       white-space: nowrap;
-    }
-    .ticker-items {
       display: flex;
-      gap: 14px;
+      align-items: center;
+      gap: 8px;
+      padding-right: 14px;
+      border-right: 2px solid #333;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+    .ticker-label-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 8px var(--lime);
+      animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .ticker-carousel {
+      display: flex;
+      overflow: hidden;
+      flex: 1;
+      position: relative;
+      mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
+    }
+    .ticker-track {
+      display: flex;
+      gap: 12px;
       align-items: center;
       white-space: nowrap;
+      animation: ticker-slide 28s linear infinite;
+      will-change: transform;
+    }
+    .ticker-carousel:hover .ticker-track {
+      animation-play-state: paused;
+    }
+    @keyframes ticker-slide {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
     }
     .ticker-pill {
-      background: #222;
-      border: 2px solid #444;
-      border-radius: 6px;
-      padding: 4px 12px;
+      background: #1a1a1a;
+      border: 2px solid #383838;
+      border-radius: 8px;
+      padding: 5px 12px 5px 6px;
       font-size: 0.84rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .ticker-pill:hover {
+      background: #252525;
+      border-color: var(--lime);
+      color: var(--lime);
+      box-shadow: 3px 3px 0 var(--lime);
+      transform: translateY(-2px);
+    }
+    .ticker-logo-box {
+      width: 32px;
+      height: 24px;
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 2px 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+    .ticker-logo-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .ticker-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+    .ticker-ext-icon {
+      opacity: 0.45;
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .ticker-pill:hover .ticker-ext-icon {
+      opacity: 1;
+      transform: translate(1px, -1px);
+      stroke: var(--lime);
     }
 
     /* ==========================================================================
@@ -2175,19 +2268,105 @@ html_content = '''<!DOCTYPE html>
 
       </div>
 
-      <!-- Insurer Ticker -->
+      <!-- Insurer Ticker & Sliding Carousel -->
       <div class="insurers-ticker">
-        <span class="ticker-label">Supported Insurers:</span>
-        <div class="ticker-items">
-          <span class="ticker-pill">Star Health</span>
-          <span class="ticker-pill">HDFC ERGO</span>
-          <span class="ticker-pill">Care Health</span>
-          <span class="ticker-pill">ICICI Lombard</span>
-          <span class="ticker-pill">Niva Bupa</span>
-          <span class="ticker-pill">Tata AIG</span>
-          <span class="ticker-pill">Bajaj Allianz</span>
-          <span class="ticker-pill">National Insurance</span>
-          <span class="ticker-pill">New India Assurance</span>
+        <span class="ticker-label"><span class="ticker-label-dot"></span>Supported Insurers:</span>
+        <div class="ticker-carousel">
+          <div class="ticker-track">
+            <!-- Set 1 -->
+            <a href="https://www.starhealth.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Star Health Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/star_health.svg" alt="Star Health Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Star Health</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.hdfcergo.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit HDFC ERGO Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/hdfc_ergo.svg" alt="HDFC ERGO Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">HDFC ERGO</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.careinsurance.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Care Health Insurance Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/care_health.png" alt="Care Health Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Care Health</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.icicilombard.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit ICICI Lombard Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/icici_lombard.svg" alt="ICICI Lombard Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">ICICI Lombard</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.nivabupa.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Niva Bupa Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/niva_bupa.jpg" alt="Niva Bupa Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Niva Bupa</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.tataaig.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Tata AIG Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/tata_aig.png" alt="Tata AIG Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Tata AIG</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.bajajallianz.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Bajaj Allianz Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/bajaj_allianz.svg" alt="Bajaj Allianz Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Bajaj Allianz</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://nationalinsurance.nic.co.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit National Insurance Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/national_insurance.jpg" alt="National Insurance Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">National Insurance</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.newindia.co.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit New India Assurance Official Portal">
+              <span class="ticker-logo-box"><img src="assets/insurers/new_india_assurance.svg" alt="New India Assurance Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">New India Assurance</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+
+            <!-- Set 2 (for seamless infinite loop) -->
+            <a href="https://www.starhealth.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Star Health Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/star_health.svg" alt="Star Health Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Star Health</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.hdfcergo.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit HDFC ERGO Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/hdfc_ergo.svg" alt="HDFC ERGO Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">HDFC ERGO</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.careinsurance.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Care Health Insurance Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/care_health.png" alt="Care Health Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Care Health</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.icicilombard.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit ICICI Lombard Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/icici_lombard.svg" alt="ICICI Lombard Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">ICICI Lombard</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.nivabupa.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Niva Bupa Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/niva_bupa.jpg" alt="Niva Bupa Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Niva Bupa</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.tataaig.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Tata AIG Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/tata_aig.png" alt="Tata AIG Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Tata AIG</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.bajajallianz.com/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit Bajaj Allianz Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/bajaj_allianz.svg" alt="Bajaj Allianz Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">Bajaj Allianz</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://nationalinsurance.nic.co.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit National Insurance Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/national_insurance.jpg" alt="National Insurance Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">National Insurance</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+            <a href="https://www.newindia.co.in/" target="_blank" rel="noopener noreferrer" class="ticker-pill" title="Visit New India Assurance Official Portal" aria-hidden="true" tabindex="-1">
+              <span class="ticker-logo-box"><img src="assets/insurers/new_india_assurance.svg" alt="New India Assurance Logo" class="ticker-logo-img" loading="lazy" /></span>
+              <span class="ticker-name">New India Assurance</span>
+              <svg class="ticker-ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+          </div>
         </div>
       </div>
 
