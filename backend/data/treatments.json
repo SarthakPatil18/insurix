@@ -1,0 +1,152 @@
+{
+  "knee_replacement": {
+    "id": "knee_replacement",
+    "name": "Total Knee Replacement (Unilateral)",
+    "category": "Orthopedic Surgery",
+    "icd": "Z96.651",
+    "specific_waiting": true,
+    "excluded": false,
+    "exclusion_code": null,
+    "day_care": false,
+    "cost_range": {
+      "min": 220000,
+      "avg": 280000,
+      "max": 350000
+    },
+    "average": 280000,
+    "room_rate": 6500,
+    "icu_rate": 14000,
+    "icu_days": 1,
+    "default_days": 4,
+    "heads": {
+      "surgeon": 75000,
+      "ot": 35000,
+      "anaesthesia": 20000,
+      "implant": 85000,
+      "medicines": 30000,
+      "diagnostics": 15000,
+      "room": 20000,
+      "icu": 0
+    }
+  },
+  "cataract": {
+    "id": "cataract",
+    "name": "Cataract Surgery with IOL (Per Eye)",
+    "category": "Ophthalmology Daycare",
+    "icd": "H25.9",
+    "specific_waiting": true,
+    "excluded": false,
+    "exclusion_code": null,
+    "day_care": true,
+    "cost_range": {
+      "min": 30000,
+      "avg": 45000,
+      "max": 65000
+    },
+    "average": 45000,
+    "room_rate": 4000,
+    "icu_rate": 0,
+    "icu_days": 0,
+    "default_days": 1,
+    "heads": {
+      "surgeon": 16000,
+      "ot": 9000,
+      "anaesthesia": 4000,
+      "implant": 11000,
+      "medicines": 3000,
+      "diagnostics": 2000,
+      "room": 0,
+      "icu": 0
+    }
+  },
+  "appendectomy": {
+    "id": "appendectomy",
+    "name": "Laparoscopic Appendectomy",
+    "category": "General Surgery",
+    "icd": "K35.80",
+    "specific_waiting": false,
+    "excluded": false,
+    "exclusion_code": null,
+    "day_care": false,
+    "cost_range": {
+      "min": 45000,
+      "avg": 65000,
+      "max": 95000
+    },
+    "average": 65000,
+    "room_rate": 5000,
+    "icu_rate": 10000,
+    "icu_days": 0,
+    "default_days": 2,
+    "heads": {
+      "surgeon": 25000,
+      "ot": 15000,
+      "anaesthesia": 7000,
+      "implant": 0,
+      "medicines": 8000,
+      "diagnostics": 5000,
+      "room": 5000,
+      "icu": 0
+    }
+  },
+  "cabg": {
+    "id": "cabg",
+    "name": "Coronary Artery Bypass Graft (CABG)",
+    "category": "Cardiothoracic Surgery",
+    "icd": "I25.10",
+    "specific_waiting": true,
+    "excluded": false,
+    "exclusion_code": null,
+    "day_care": false,
+    "cost_range": {
+      "min": 300000,
+      "avg": 380000,
+      "max": 550000
+    },
+    "average": 380000,
+    "room_rate": 7500,
+    "icu_rate": 18000,
+    "icu_days": 3,
+    "default_days": 7,
+    "heads": {
+      "surgeon": 110000,
+      "ot": 60000,
+      "anaesthesia": 35000,
+      "implant": 45000,
+      "medicines": 45000,
+      "diagnostics": 30000,
+      "room": 25000,
+      "icu": 30000
+    }
+  },
+  "dialysis": {
+    "id": "dialysis",
+    "name": "Hemodialysis (Single Session)",
+    "category": "Nephrology Daycare",
+    "icd": "Z99.2",
+    "specific_waiting": false,
+    "excluded": false,
+    "exclusion_code": null,
+    "day_care": true,
+    "cost_range": {
+      "min": 2500,
+      "avg": 3500,
+      "max": 5000
+    },
+    "average": 3500,
+    "room_rate": 1500,
+    "icu_rate": 0,
+    "icu_days": 0,
+    "default_days": 1,
+    "heads": {
+      "surgeon": 800,
+      "ot": 0,
+      "anaesthesia": 0,
+      "implant": 700,
+      "medicines": 1200,
+      "diagnostics": 800,
+      "room": 0,
+      "icu": 0
+    }
+  }
+}

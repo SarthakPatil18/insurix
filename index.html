@@ -2244,6 +2244,7 @@
           </div>
           <div style="display:flex; gap:10px; align-items:center;">
             <span class="badge-pill" id="landing-loaded-policy-badge">Policy: Star Comprehensive (5L)</span>
+            <span class="badge-pill" id="engine-mode-pill" style="font-size:0.75rem; background:var(--gray);">Local Engine</span>
             <button class="touch-button" onclick="navigateTo('demo')" style="padding:6px 12px; font-size:0.82rem;">Open Full Workspace ↗</button>
           </div>
         </div>
@@ -3827,6 +3828,40 @@
       }
     }
 
+    let isBackendOnline = false;
+    async function probeBackend() {
+      try {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 1200);
+        const res = await fetch('http://localhost:8123/health', { signal: ctrl.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const data = await res.json();
+          isBackendOnline = (data.status === 'healthy' || data.status === 'degraded');
+          const pill = document.getElementById('engine-mode-pill');
+          if (pill && isBackendOnline) {
+            pill.textContent = 'Server Engine (Port 8123)';
+            pill.style.background = 'var(--neon-mint)';
+          }
+        }
+      } catch (e) {
+        isBackendOnline = false;
+        const pill = document.getElementById('engine-mode-pill');
+        if (pill) {
+          pill.textContent = 'Local Engine';
+          pill.style.background = 'var(--gray)';
+        }
+      }
+    }
+    // Probe backend on load
+    if (typeof window !== 'undefined') {
+      window.addEventListener('DOMContentLoaded', () => {
+        probeBackend();
+      });
+      // Also probe immediately in case DOMContentLoaded already fired
+      probeBackend();
+    }
+
     function sendChatQuery(context) {
       const input = document.getElementById(`${context}-chat-input`);
       const container = document.getElementById(`${context}-chat-container`);
@@ -3854,15 +3889,38 @@
       container.appendChild(typingDiv);
       container.scrollTop = container.scrollHeight;
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // Remove typing
         const t = document.getElementById(`typing-${context}`);
         if (t) t.remove();
 
-        // Generate response based on question keywords & currentPolicy
-        const replyData = generatePolicyResponse(question, currentPolicy);
+        let replyData = null;
+        if (isBackendOnline) {
+          try {
+            const ctrl = new AbortController();
+            const timeout = setTimeout(() => ctrl.abort(), 3000);
+            const res = await fetch('http://localhost:8123/api/query', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question, policy_id: currentPolicy.id }),
+              signal: ctrl.signal
+            });
+            clearTimeout(timeout);
+            if (res.ok) {
+              replyData = await res.json();
+            }
+          } catch (e) {
+            console.warn('Backend fetch failed, falling back to local engine:', e);
+          }
+        }
+
+        if (!replyData) {
+          // Generate response based on local engine
+          replyData = generatePolicyResponse(question, currentPolicy);
+        }
+
         appendAssistantMessage(container, replyData);
-      }, 950);
+      }, 700);
     }
 
     function generatePolicyResponse(query, policy) {
