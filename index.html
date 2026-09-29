@@ -2138,7 +2138,7 @@
             </svg>
             <h3 style="font-size:1.15rem; font-weight:700; margin-bottom:4px;">Drop Policy PDF Here</h3>
             <p>Supports Star Health, HDFC ERGO, Care, Max Bupa & 50+ insurers</p>
-            <span class="upload-zone-hint">PDF up to 25MB • Vision OCR Enabled</span>
+            <span class="upload-zone-hint">Insurance policy PDFs only • Up to 25MB • Vision OCR Enabled</span>
           </div>
 
           <!-- Sample Policies List -->
@@ -3662,7 +3662,7 @@
         zone.addEventListener('drop', (e) => {
           const files = e.dataTransfer.files;
           if (files.length > 0) {
-            simulateUpload(files[0].name);
+            validateAndUpload(files[0]);
           }
         });
       });
@@ -3670,19 +3670,115 @@
 
     function handleFileSelected(e) {
       if (e.target.files && e.target.files.length > 0) {
-        simulateUpload(e.target.files[0].name);
+        validateAndUpload(e.target.files[0]);
       }
     }
 
-    function simulateUpload(filename) {
+    /* ------------------------------------------------------------------
+       POLICY DOCUMENT VALIDATION
+       Reads raw PDF bytes and checks for >=3 insurance-specific terms.
+       Rejects anything that doesn't look like a real policy document.
+    ------------------------------------------------------------------ */
+    const POLICY_KEYWORDS = [
+      'policy', 'insured', 'insurer', 'insurance', 'premium', 'deductible',
+      'coverage', 'claim', 'benefit', 'exclusion', 'copay', 'co-pay',
+      'coinsurance', 'co-insurance', 'waiting period', 'preauthorization',
+      'hospitalization', 'sum insured', 'policyholder', 'reimbursement',
+      'endorsement', 'in-patient', 'out-patient', 'out-of-pocket',
+      'health plan', 'underwriter', 'sub-limit', 'rider', 'maternity',
+      'cashless', 'network provider', 'day care', 'domiciliary'
+    ];
+    const MIN_KEYWORD_HITS = 3;
+
+    function validatePolicyFile(file) {
+      return new Promise((resolve) => {
+        // -- 1. File type check --
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext !== 'pdf' && file.type !== 'application/pdf') {
+          resolve({
+            valid: false,
+            reason: `Only PDF files are accepted — you uploaded a <strong>.${ext.toUpperCase()}</strong> file. Export your policy as a PDF and try again.`
+          });
+          return;
+        }
+
+        // -- 2. Read raw bytes and scan for insurance keywords --
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const raw = ev.target.result;
+
+          // Check PDF magic header
+          if (!raw.startsWith('%PDF-')) {
+            resolve({ valid: false, reason: 'The file does not appear to be a valid PDF. Please check the file and try again.' });
+            return;
+          }
+
+          const lower = raw.toLowerCase();
+          const hits = POLICY_KEYWORDS.filter(kw => lower.includes(kw));
+
+          if (hits.length >= MIN_KEYWORD_HITS) {
+            resolve({ valid: true });
+          } else {
+            resolve({
+              valid: false,
+              reason: `We couldn't verify this as a health insurance policy document.<br><small style="opacity:.7;">Detected ${hits.length} of ${MIN_KEYWORD_HITS} required policy terms. Please upload your official insurer-issued policy PDF.</small>`
+            });
+          }
+        };
+        reader.onerror = () => {
+          resolve({ valid: false, reason: 'Could not read the file. It may be password-protected or corrupted. Please try again.' });
+        };
+        reader.readAsBinaryString(file);
+      });
+    }
+
+    async function validateAndUpload(file) {
       const zones = document.querySelectorAll('.upload-zone');
+
+      // -- Show scanning state --
       zones.forEach(zone => {
         zone.classList.add('processing');
         zone.innerHTML = `
-          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-            <div style="width:28px; height:28px; border:4px solid var(--black); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite;"></div>
-            <strong>Analyzing ${filename}...</strong>
-            <span style="font-size:0.75rem;">Extracting OCR clauses & table sub-limits...</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <div style="width:28px;height:28px;border:4px solid var(--black);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+            <strong>Validating document…</strong>
+            <span style="font-size:0.75rem;opacity:.7;">Checking for policy terms &amp; PDF integrity</span>
+          </div>
+        `;
+      });
+
+      const result = await validatePolicyFile(file);
+
+      if (!result.valid) {
+        // -- REJECTION STATE --
+        zones.forEach(zone => {
+          zone.classList.remove('processing');
+          zone.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--accent);border:3px solid var(--black);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;">✗</div>
+              <strong style="font-size:1rem;">Document Rejected</strong>
+              <p style="font-size:0.8rem;line-height:1.5;max-width:280px;margin:0;">${result.reason}</p>
+              <button
+                onclick="resetUploadZones()"
+                style="margin-top:4px;padding:8px 20px;font-family:inherit;font-size:0.8rem;font-weight:700;cursor:pointer;border:2.5px solid var(--black);border-radius:4px;background:var(--surface);box-shadow:3px 3px 0 var(--black);transition:all .15s;letter-spacing:.03em;"
+                onmouseover="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='5px 5px 0 var(--black)';"
+                onmouseout="this.style.transform='';this.style.boxShadow='3px 3px 0 var(--black)';"
+              >↩ Try Another File</button>
+            </div>
+          `;
+        });
+        showToast('❌ Not a valid policy document — please upload an insurance PDF.');
+        return;
+      }
+
+      // -- ACCEPTED: show analysis progress then navigate --
+      const filename = file.name;
+      zones.forEach(zone => {
+        zone.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;border:4px solid var(--black);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+            <strong>Analyzing ${filename}…</strong>
+            <span style="font-size:0.75rem;opacity:.7;">Extracting OCR clauses &amp; table sub-limits…</span>
           </div>
         `;
       });
@@ -3691,14 +3787,27 @@
         zones.forEach(zone => {
           zone.classList.remove('processing');
           zone.innerHTML = `
-            <svg class="upload-icon" style="width:36px; height:36px; margin-bottom:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <div style="font-size:0.95rem; font-weight:700;">${filename} Ingested!</div>
+            <svg class="upload-icon" style="width:36px;height:36px;margin-bottom:6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style="font-size:0.95rem;font-weight:700;">${filename} Ingested!</div>
             <div style="font-size:0.75rem;">42 Clauses extracted • Ready to query</div>
           `;
         });
-        showToast(`Document "${filename}" parsed successfully!`);
+        showToast(`✅ Policy "${filename}" parsed successfully!`);
         navigateTo('demo');
       }, 1600);
+    }
+
+    function resetUploadZones() {
+      const zones = document.querySelectorAll('.upload-zone');
+      zones.forEach(zone => {
+        zone.classList.remove('processing');
+        zone.innerHTML = `
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="upload-text">Drop your policy PDF here</div>
+          <div class="upload-subtext">or <label for="policy-upload" style="text-decoration:underline;cursor:pointer;font-weight:700;">browse files</label></div>
+          <div class="upload-subtext" style="margin-top:4px;opacity:.6;">Only insurance policy PDFs are accepted</div>
+        `;
+      });
     }
 
     /* ==========================================================================
