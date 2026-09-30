@@ -3900,20 +3900,59 @@
     }
 
     let isBackendOnline = false;
+    function backendHealthUrl() {
+      const port = '8123';
+      if (location.protocol === 'file:') return `http://localhost:${port}/health`;
+      return `${location.origin.replace(/:\d+$/,'')}:${port}/health`;
+    }
     async function probeBackend() {
       try {
         const ctrl = new AbortController();
         const timeout = setTimeout(() => ctrl.abort(), 1200);
-        const res = await fetch('http://localhost:8123/health', { signal: ctrl.signal });
-        clearTimeout(timeout);
-        if (res.ok) {
-          const data = await res.json();
-          isBackendOnline = (data.status === 'healthy' || data.status === 'degraded');
-          const pill = document.getElementById('engine-mode-pill');
-          if (pill && isBackendOnline) {
+        let res;
+        try {
+          res = await fetch(backendHealthUrl(), { signal: ctrl.signal, cache: 'no-store' });
+        } finally {
+          clearTimeout(timeout);
+        }
+
+        const pill = document.getElementById('engine-mode-pill');
+        function setLocal() {
+          isBackendOnline = false;
+          if (pill) {
+            pill.textContent = 'Local Engine';
+            pill.style.background = 'var(--gray)';
+          }
+        }
+        function setRemote() {
+          isBackendOnline = true;
+          if (pill) {
             pill.textContent = 'Server Engine (Port 8123)';
             pill.style.background = 'var(--neon-mint)';
           }
+        }
+
+        if (!res || !res.ok) { setLocal(); return; }
+        const ct = (res.headers.get('content-type') || '').toLowerCase();
+        const clen = parseInt(res.headers.get('content-length') || '-1', 10);
+        if (clen === 0 || (!ct.includes('application/json') && !ct.includes('+json'))) {
+          setLocal();
+          return;
+        }
+        let data;
+        try {
+          const txt = await res.text();
+          if (!txt || !txt.trim()) { setLocal(); return; }
+          data = JSON.parse(txt);
+        } catch (jsonErr) {
+          console.warn('probeBackend: response is not valid JSON:', jsonErr);
+          setLocal();
+          return;
+        }
+        if (data && (data.status === 'healthy' || data.status === 'degraded')) {
+          setRemote();
+        } else {
+          setLocal();
         }
       } catch (e) {
         isBackendOnline = false;
@@ -3933,13 +3972,18 @@
       probeBackend();
     }
 
+    function queryUrl() {
+      const port = '8123';
+      if (location.protocol === 'file:') return `http://localhost:${port}/api/query`;
+      return `${location.origin.replace(/:\d+$/,'')}:${port}/api/query`;
+    }
     function sendChatQuery(context) {
       const input = document.getElementById(`${context}-chat-input`);
       const container = document.getElementById(`${context}-chat-container`);
+      if (!input || !container) return;
       const question = input.value.trim();
       if (!question) return;
 
-      // Append User message
       const userDiv = document.createElement('div');
       userDiv.className = 'chat-message user';
       userDiv.textContent = question;
@@ -3947,7 +3991,6 @@
       input.value = '';
       container.scrollTop = container.scrollHeight;
 
-      // Show Typing indicator
       const typingDiv = document.createElement('div');
       typingDiv.className = 'typing-indicator';
       typingDiv.id = `typing-${context}`;
@@ -3961,7 +4004,6 @@
       container.scrollTop = container.scrollHeight;
 
       setTimeout(async () => {
-        // Remove typing
         const t = document.getElementById(`typing-${context}`);
         if (t) t.remove();
 
@@ -3970,15 +4012,26 @@
           try {
             const ctrl = new AbortController();
             const timeout = setTimeout(() => ctrl.abort(), 3000);
-            const res = await fetch('http://localhost:8123/api/query', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ question, policy_id: currentPolicy.id }),
-              signal: ctrl.signal
-            });
-            clearTimeout(timeout);
-            if (res.ok) {
-              replyData = await res.json();
+            let res;
+            try {
+              res = await fetch(queryUrl(), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question, policy_id: currentPolicy.id }),
+                signal: ctrl.signal
+              });
+            } finally {
+              clearTimeout(timeout);
+            }
+            if (res && res.ok) {
+              const ct = (res.headers.get('content-type') || '').toLowerCase();
+              if (ct.includes('application/json') || ct.includes('+json')) {
+                const txt = await res.text();
+                if (txt && txt.trim()) {
+                  try { replyData = JSON.parse(txt); }
+                  catch (je) { console.warn('sendChatQuery: bad JSON body:', je); replyData = null; }
+                }
+              }
             }
           } catch (e) {
             console.warn('Backend fetch failed, falling back to local engine:', e);
@@ -3986,11 +4039,27 @@
         }
 
         if (!replyData) {
-          // Generate response based on local engine
-          replyData = generatePolicyResponse(question, currentPolicy);
+          try {
+            replyData = generatePolicyResponse(question, currentPolicy);
+          } catch (genErr) {
+            console.error('generatePolicyResponse threw:', genErr);
+            replyData = {
+              answer: 'Policy engine encountered an unexpected error while preparing the response. Please rephrase your question or switch to another sample policy.',
+              evidence: [],
+              uncertainty: { confidence: 'low', missing_info: ['Engine error'], recommendation: 'Retry with a different phrasing.' }
+            };
+          }
         }
 
-        appendAssistantMessage(container, replyData);
+        try {
+          appendAssistantMessage(container, replyData);
+        } catch (renderErr) {
+          console.error('appendAssistantMessage threw:', renderErr);
+          const fall = document.createElement('div');
+          fall.className = 'chat-message assistant';
+          fall.textContent = replyData && replyData.answer ? replyData.answer : 'Response unavailable.';
+          container.appendChild(fall);
+        }
       }, 700);
     }
 
@@ -4127,59 +4196,69 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = 'chat-message assistant';
       
-      let html = `<div class="message-text">${data.answer}</div>`;
+      const safeAnswer = escapeHtml(data.answer || '');
+      let html = `<div class="message-text">${safeAnswer}</div>`;
       
-      // Evidence citations
       if (data.evidence && data.evidence.length > 0) {
         html += '<div class="evidence-list">';
         data.evidence.forEach(ev => {
+          const page = Number(ev.page) || 0;
+          const section = escapeHtml(ev.section || '');
+          const safeText = escapeHtml(ev.text || '');
+          const jsText = escapeJsInHtmlAttr(ev.text || '');
           html += `
-            <div class="evidence-citation" onclick="openClauseModal('Section ${ev.section}', ${ev.page}, '${escapeQuote(ev.text)}')">
-              <span class="source-badge">Page ${ev.page}, §${ev.section}</span>
-              <span>"${ev.text}"</span>
+            <div class="evidence-citation" onclick="openClauseModal('Section ${section}', ${page}, '${jsText}')">
+              <span class="source-badge">Page ${page}, §${section}</span>
+              <span>"${safeText}"</span>
             </div>
           `;
         });
         html += '</div>';
       }
       
-      // Cost breakdown
       if (data.cost_estimate) {
+        const ce = data.cost_estimate;
+        const total = (Number(ce.total_cost) || 0).toLocaleString();
+        const covered = (Number(ce.potentially_covered) || 0).toLocaleString();
+        const deduct = (Number(ce.deductible) || 0).toLocaleString();
+        const copay = (Number(ce.co_payment) || 0).toLocaleString();
+        const oop = (Number(ce.out_of_pocket) || 0).toLocaleString();
         html += `
           <table class="cost-table">
             <thead>
               <tr><th>Financial Component</th><th>Amount</th></tr>
             </thead>
             <tbody>
-              <tr><td>Total Treatment Cost</td><td>₹${data.cost_estimate.total_cost.toLocaleString()}</td></tr>
-              <tr><td>Potentially Covered</td><td>₹${data.cost_estimate.potentially_covered.toLocaleString()}</td></tr>
-              <tr><td>Deductible Applied</td><td>₹${data.cost_estimate.deductible.toLocaleString()}</td></tr>
-              <tr><td>Co-payment Liability</td><td>₹${data.cost_estimate.co_payment.toLocaleString()}</td></tr>
-              <tr class="total-row"><td><strong>Estimated Out-of-Pocket</strong></td><td><strong>₹${data.cost_estimate.out_of_pocket.toLocaleString()}</strong></td></tr>
+              <tr><td>Total Treatment Cost</td><td>₹${total}</td></tr>
+              <tr><td>Potentially Covered</td><td>₹${covered}</td></tr>
+              <tr><td>Deductible Applied</td><td>₹${deduct}</td></tr>
+              <tr><td>Co-payment Liability</td><td>₹${copay}</td></tr>
+              <tr class="total-row"><td><strong>Estimated Out-of-Pocket</strong></td><td><strong>₹${oop}</strong></td></tr>
             </tbody>
           </table>
         `;
       }
       
-      // Confidence & Uncertainty
       if (data.uncertainty) {
-        const conf = data.uncertainty.confidence || 'medium';
+        const confRaw = data.uncertainty.confidence || 'medium';
+        const conf = (confRaw === 'high' || confRaw === 'low') ? confRaw : 'medium';
         const icon = conf === 'high' ? '✓' : '⚠';
+        const confLabel = conf.charAt(0).toUpperCase() + conf.slice(1);
         html += `
           <div>
-            <div class="confidence-badge ${conf}">
-              ${icon} ${conf.charAt(0).toUpperCase() + conf.slice(1)} Confidence
+            <div class="confidence-badge ${escapeHtml(conf)}">
+              ${icon} ${escapeHtml(confLabel)} Confidence
             </div>
           </div>
         `;
         
-        if (data.uncertainty.missing_info && data.uncertainty.missing_info.length > 0) {
+        if (data.uncertainty.missing_info && Array.isArray(data.uncertainty.missing_info) && data.uncertainty.missing_info.length > 0) {
           html += '<div class="missing-info-box"><strong>Ambiguity Flags & Missing Information:</strong><ul>';
           data.uncertainty.missing_info.forEach(info => {
-            html += `<li>${info}</li>`;
+            html += `<li>${escapeHtml(info)}</li>`;
           });
           if (data.uncertainty.recommendation) {
-            html += `<li style="margin-top:4px;"><strong>Advice:</strong> ${data.uncertainty.recommendation}</li>`;
+            html += `<li style="margin-top:4px;"><strong>Advice:</strong> ${escapeHtml(data.uncertainty.recommendation)}</li>`;
           }
           html += '</ul></div>';
         }
@@ -4190,8 +4269,26 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    function escapeQuote(str) {
-      return str.replace(/'/g, "'").replace(/"/g, '&quot;');
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeJsInHtmlAttr(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/\/g, '\\')
+        .replace(/
+/g, '\n')
+        .replace(//g, '\r')
+        .replace(/	/g, '\t')
+        .replace(/'/g, "\'")
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;');
     }
 
     /* ==========================================================================
@@ -4545,26 +4642,39 @@ Co-payment: ${currentPolicy.co_payment}`
        INITIALIZATION
        ========================================================================== */
     document.addEventListener('DOMContentLoaded', () => {
-      try { 
-        localStorage.removeItem('insurix-hero-theme'); 
-        localStorage.removeItem('insurix-theme');
-        document.body.classList.remove('dark');
-      } catch(e) {}
-      setupDragAndDrop();
-      setupCursorTrail();
-
-      // Mobile button listener
-      const mobBtn = document.getElementById('mobile-toggle');
-      if (mobBtn) {
-        mobBtn.addEventListener('click', toggleMobileMenu);
+      const steps = [
+        ['resetThemeState', () => {
+          try { localStorage.removeItem('insurix-hero-theme'); } catch(e) {}
+          try { localStorage.removeItem('insurix-theme'); } catch(e) {}
+          try { document.body.classList.remove('dark'); } catch(e) {}
+        }],
+        ['setupDragAndDrop', () => setupDragAndDrop()],
+        ['setupCursorTrail', () => setupCursorTrail()],
+        ['bindMobileButton', () => {
+          const mobBtn = document.getElementById('mobile-toggle');
+          if (mobBtn) mobBtn.addEventListener('click', toggleMobileMenu);
+        }],
+        ['initialRoute', () => {
+          const hash = window.location.hash.replace('#', '') || 'home';
+          navigateTo(hash);
+        }],
+        ['initialCalculation', () => runTreatmentCalculation()],
+        ['bindPolicyFooterLinks', () => {}],
+      ];
+      const failed = [];
+      for (const [name, fn] of steps) {
+        try {
+          fn();
+        } catch (e) {
+          failed.push(name);
+          console.error(`[insurix init] ${name} FAILED:`, e);
+        }
       }
-
-      // Check URL hash for initial route
-      const hash = window.location.hash.replace('#', '') || 'home';
-      navigateTo(hash);
-
-      // Run initial treatment calculation
-      runTreatmentCalculation();
+      if (failed.length > 0) {
+        try {
+          showToast('Some features failed to initialize: ' + failed.join(', '));
+        } catch (_) { /* best effort */ }
+      }
     });
   </script>
 </body>
